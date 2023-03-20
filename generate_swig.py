@@ -72,7 +72,9 @@ third.update(make_vec(second))
 third.update(make_map(ktypes, second))
 
 
-content = header + "\n".join(render(first)) + "\n".join(render(second)) + "\n".join(render(third))
+content = header + "\n".join(render(first))
+content += "\n".join(render(second)) 
+#content += "\n".join(render(third))
 
 os.system("mkdir CSTL")
 open("CSTL/CSTL.i", "w").write(content)

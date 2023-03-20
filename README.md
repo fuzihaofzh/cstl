@@ -9,10 +9,11 @@ pip install CSTL
 ```
 Build from source:
 ```
+conda install swig # You should first install swig
 git clone https://github.com/fuzihaofzh/CSTL.git
 cd CSTL
 ./build.sh
-python setup.py install
+python setup.py install --single-version-externally-managed --record files.txt
 ```
 
 ## Usage 
@@ -25,6 +26,8 @@ print(vec[2])      #1
 vec.append(10)
 print(vec[-1])     #10
 print(list(vec))   #[1, 2, 1, 4, 5, 6, 7, 10]
+vmif = CSTL.VecMapIntFloat([{1:3.4},{4:5.5}])
+print(vmif[0][1])  #3.4000000953674316
 ```
 
 ## Supported Datatype
@@ -47,7 +50,7 @@ The supported containers are listed as follows
 |dict|std::unordered_map|
 |set|std::unordered_set|
 
-We also support nested container, namely, structure like `std::unordered_map< std::string,std::unordered_map< std::string,std::vector< bool > > >` is supported. Currently, at most 3 nested layers are supported.
+We also support nested container, namely, structure like `std::unordered_map< std::string,std::vector< bool > > ` is supported. Currently, at most 2 nested layers are supported. If you want to support more layers, simply uncomment the line `content += "\n".join(render(third))` in `generate_swig.py` and compile from the source. But please note the the generated files could be very large.
 
 ## Copy on Write Issue in Python
 This is a feature not a bug for Python. In multi-processing programs, the shared object will be copied to each process if they access the data. However, if the data is large and we use several processes, the memory cannot hold a separate copy for each process. This cannot be solved in Python as all Python's native structures with ref count have such problems. A more detailed discussion can be found at https://github.com/pytorch/pytorch/issues/13246 .
