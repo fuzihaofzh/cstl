@@ -5,6 +5,8 @@ vtypes = {"Int" : "int", "Str" : "std::string", "Float" : "float", "Double" : "d
 header = """%module CSTL
 
 %{
+//define this to avoid automatically convert std::vector to python list. User should do it manually when needed.
+#   define SWIG_PYTHON_EXTRA_NATIVE_CONTAINERS  
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -24,14 +26,15 @@ header = """%module CSTL
 def make_vec(types):
     res = {}
     for t in types:
-        res["Vec" + t] = f"std::vector<{types[t]} >"
+        res["Vec" + t] = {"cname" : f"std::vector<{types[t]} >", "typemap" : f"%typemap(out) std::vector<{types[t]} >::value_type & {{ $result = swig::from(static_cast< std::vector< <{types[t]},std::allocator< <{types[t]} > >* >($1));}}", "value" : types[t]}
     return res
 
-def make_map(keys, types):
+def make_map(keys, vtypes):
     res = {}
     for key in keys:
-        for t in types:
-            res["Map" + key + t] = f"std::unordered_map<{keys[key]}, {types[t]} >"
+        for t in vtypes:
+            res["Map" + key + t] = [f"std::unordered_map<{keys[key]}, {vtypes[t]} >", 
+            f"%typemap(out) std::unordered_map< {keys[key]},{vtypes[t]} >::mapped_type & {{ $result = swig::from(static_cast< std::unordered_map< int,int,std::hash< int >,std::equal_to< int >,std::allocator< std::pair< int const,int > > >* >(result));}}"]
     return res
 
 def make_set(types):
@@ -71,13 +74,21 @@ third = {}
 third.update(make_vec(second))
 third.update(make_map(ktypes, second))
 
+full = first
+full.update(second)
+#full.update(third)
+content = header + "\n".join(render(full))
 
-content = header + "\n".join(render(first))
-content += "\n".join(render(second)) 
-#content += "\n".join(render(third))
 
 os.system("mkdir CSTL")
 open("CSTL/CSTL.i", "w").write(content)
 open("CSTL/__init__.py", "w").write("from CSTL.version import __version__\nfrom CSTL.CSTL import *")
 os.system("cp version.py CSTL/version.py")
+
+
+md = []
+for f in full:
+    md.append(f"| {f} | `{full[f]}` |")
+open("CSTL/supported_containers.md", "w").write("\n".join(md))
+
 

@@ -1,5 +1,6 @@
 import CSTL
 import time
+import numpy as np
 
 total = 1000000
 
@@ -9,15 +10,26 @@ def rand_access_test(lst):
         lst[i] += 1
     print(time.time() - st)
 
+def slice_access_test(lst):
+    st = time.time()
+    for i in range(len(lst)):
+        b = lst[200 : 300] 
+    print(time.time() - st)
+
 def find_element_test(lst):
     st = time.time()
     lst.find(9999999)
     print(time.time() - st)
 
 plst = list(range(1000000))
-rand_access_test(plst)
 vec_int = CSTL.VecInt(range(1000000))
-rand_access_test(vec_int)
+npa = np.array(plst)
 
-find_element_test(plst)
-find_element_test(vec_int)
+rand_access_test(plst)
+rand_access_test(vec_int)
+rand_access_test(npa)
+
+slice_access_test(plst)
+slice_access_test(vec_int)
+slice_access_test(npa)
+
