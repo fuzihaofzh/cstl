@@ -1,6 +1,6 @@
 # CSTL : The C++ Standard Template Library (STL) for Python
 
-In this `CSTL` tool, we wrap several C++ STL containers to use in Python. The containers use native C++ implementation and will not have the [copy on write][https://en.wikipedia.org/wiki/Copy-on-write] issue like native `list`, and `dict` in Python. Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
+In this `CSTL` tool, we wrap several C++ STL containers to use in Python. The containers use native C++ implementation and will not have the [copy on write](https://en.wikipedia.org/wiki/Copy-on-write) issue like native `list`, and `dict` in Python. Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
 
 ## Install
 Install from `pip`:
