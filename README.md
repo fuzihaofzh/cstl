@@ -1,6 +1,6 @@
 # CSTL : The C++ Standard Template Library (STL) for Python
 
-In this `CSTL` tool, we wrap several C++ STL containers to use in Python. The containers use native C++ implementation and will not have the [copy on write](https://en.wikipedia.org/wiki/Copy-on-write) issue like native `list`, and `dict` in Python. Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
+In this `CSTL` tool, we wrap several C++ STL containers to use in Python. The containers use native C++ implementation and will not have the [Copy-on-Write issue](#copy-on-Write-issue-in-python)  like native `list`, and `dict` in Python. Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
 
 ## Install
 Install from `pip`:
@@ -52,8 +52,8 @@ The supported containers are listed as follows
 
 We also support nested container, namely, structure like `std::unordered_map< std::string,std::vector< bool > > ` is supported. Currently, at most 2 nested layers are supported. If you want to support more layers, simply uncomment the line `content += "\n".join(render(third))` in `generate_swig.py` and compile from the source. But please note the the generated files could be very large.
 
-## Copy on Write Issue in Python
-This is a feature not a bug for Python. In multi-processing programs, the shared object will be copied to each process if they access the data. However, if the data is large and we use several processes, the memory cannot hold a separate copy for each process. This cannot be solved in Python as all Python's native structures with ref count have such problems. A more detailed discussion can be found at https://github.com/pytorch/pytorch/issues/13246 .
+## Copy-on-Write Issue in Python
+[Copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write) is a feature and not a bug for Python. Usually, in python multiprocessing, if we have a large data shared by each process, we will see as the program runs, the engaged memory grows gradually and finally occupy all the machine's memory and raise a Memory Error. Someone refers to it as memory leaky in the multiprocess. However, this is caused by a feature of Python. It is because, in multi-processing programs, the shared object will be copied to each process if they access the data. However, if the data is large and we use several processes, the memory cannot hold a separate copy for each process. This cannot be solved in Python as all Python's native structures with ref count have such problems (feature?). A more detailed discussion can be found at https://github.com/pytorch/pytorch/issues/13246 .
 
 
 

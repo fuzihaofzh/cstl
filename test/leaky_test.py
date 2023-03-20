@@ -7,6 +7,7 @@ import gc
 from multiprocessing import Manager
 import sys
 import CSTL
+from tqdm.auto import tqdm
 
 class MyDict(object):
     def __init__(self, d = {}):
@@ -88,7 +89,7 @@ train_loader = DataLoader(train_data, batch_size=300,
                           pin_memory=False,
                           num_workers=18)
 
-for i, item in enumerate(train_loader):
+for i, item in tqdm(enumerate(train_loader)):
     torch.cuda.empty_cache()
     if i % 1000 == 0:
         print(i)
