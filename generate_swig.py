@@ -1,8 +1,8 @@
 import os
 ktypes = {"Int" : "int", "Str" : "std::string", "Long" : "std::int64_t"}
-vtypes = {"Int" : "int", "Str" : "std::string", "Float" : "float", "Double" : "double", "Bool" : "bool" , "Long" : "std::int64_t"}
+bvtypes = {"Int" : {"cname" : "int"}, "Str" : {"cname" : "std::string"}, "Float" : {"cname" : "float"}, "Double" : {"cname" : "double"}, "Bool" : {"cname" : "bool"} , "Long" : {"cname" : "std::int64_t"}}
 
-header = """%module CSTL
+header = """%module cstl
 
 %{
 //define this to avoid automatically convert std::vector to python list. User should do it manually when needed.
@@ -26,45 +26,32 @@ header = """%module CSTL
 def make_vec(types):
     res = {}
     for t in types:
-        res["Vec" + t] = {"cname" : f"std::vector<{types[t]} >", "typemap" : f"%typemap(out) std::vector<{types[t]} >::value_type & {{ $result = swig::from(static_cast< std::vector< <{types[t]},std::allocator< <{types[t]} > >* >($1));}}", "value" : types[t]}
+        conversion = f"$result = swig::from(static_cast< std::vector<{types[t]['cname']},std::allocator< {types[t]['cname']} > >* >($1));"
+        res["Vec" + t] = {"cname" : f"std::vector<{types[t]['cname']}> ", "typemap" : f"%typemap(out) std::vector<{types[t]['cname']} >::value_type & {{\n    {types[t]['conversion']}\n}}" if 'conversion' in types[t] else "", "conversion" : conversion}
     return res
 
 def make_map(keys, vtypes):
     res = {}
     for key in keys:
         for t in vtypes:
-            res["Map" + key + t] = [f"std::unordered_map<{keys[key]}, {vtypes[t]} >", 
-            f"%typemap(out) std::unordered_map< {keys[key]},{vtypes[t]} >::mapped_type & {{ $result = swig::from(static_cast< std::unordered_map< int,int,std::hash< int >,std::equal_to< int >,std::allocator< std::pair< int const,int > > >* >(result));}}"]
+            conversion = f"resultobj = swig::from(static_cast< std::unordered_map< {keys[key]}, {vtypes[t]['cname']},std::hash< {keys[key]} >,std::equal_to< {keys[key]} >,std::allocator< std::pair< {keys[key]} const,{vtypes[t]['cname']} > > > * >(result));"
+            res["Map" + key + t] = {"cname" : f"std::unordered_map<{keys[key]}, {vtypes[t]['cname']}> ", "typemap" : f"%typemap(out) std::unordered_map<{keys[key]}, {vtypes[t]['cname']} >::mapped_type & {{\n    {vtypes[t]['conversion']}\n}}" if "conversion" in vtypes[t] else "", "conversion" : conversion}
     return res
 
 def make_set(types):
     res = {}
     for t in types:
-        res["Set" + t] = f"std::unordered_set<{types[t]} >"
-    return res
-
-def make_queue(types):
-    res = {}
-    for t in types:
-        res["Que" + t] = f"std::queue<{types[t]} >"
-    return res
-
-def make_stack(types):
-    res = {}
-    for t in types:
-        res["Stk" + t] = f"std::stack<{types[t]} >"
+        conversion = f"$result = swig::from(static_cast< std::unordered_set< {types[t]},std::hash< {types[t]} >,std::equal_to< {types[t]} >,std::allocator< {types[t]} > > * >(result));"
+        res["Set" + t] = {"cname" : f"std::unordered_set<{types[t]}> ", "typemap" : "", "conversion" : conversion}
     return res
 
 def render(tmap):
-    return [f"%template({t}) {tmap[t]};" for t in tmap]
-    
+    return [f"{tmap[t]['typemap']}\n%template({t}) {tmap[t]['cname']};\n" for t in tmap]
 
 first = {}
-first.update(make_vec(vtypes))
+first.update(make_vec(bvtypes))
 first.update(make_set(ktypes))
-#first.update(make_queue(vtypes))
-#first.update(make_stack(vtypes))
-first.update(make_map(ktypes, vtypes))
+first.update(make_map(ktypes, bvtypes))
 
 second = {}
 second.update(make_vec(first))
@@ -74,21 +61,24 @@ third = {}
 third.update(make_vec(second))
 third.update(make_map(ktypes, second))
 
-full = first
+full = {}
+full.update(first)
 full.update(second)
 #full.update(third)
+
+os.system("mkdir cstl")
 content = header + "\n".join(render(full))
+open("cstl/cstl.i", "w").write(content)
 
 
-os.system("mkdir CSTL")
-open("CSTL/CSTL.i", "w").write(content)
-open("CSTL/__init__.py", "w").write("from CSTL.version import __version__\nfrom CSTL.CSTL import *")
-os.system("cp version.py CSTL/version.py")
+open("cstl/cstl.i", "w").write(content)
+open("cstl/__init__.py", "w").write("from cstl.version import __version__\nfrom cstl.cstl import *")
+os.system("cp version.py cstl/version.py")
 
 
 md = []
 for f in full:
-    md.append(f"| {f} | `{full[f]}` |")
-open("CSTL/supported_containers.md", "w").write("\n".join(md))
+    md.append(f"| {f} | `{full[f]['cname']}` |")
+open("cstl/supported_containers.md", "w").write("\n".join(md))
 
 

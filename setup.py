@@ -7,10 +7,10 @@ long_description = (this_directory / "README.md").read_text()
 from CSTL.version import __version__
 
 setup(
-    name='CSTL',
+    name='cstl',
     version=__version__,
     description='The C++ Standard Template Library (STL) for Python',
-    url='https://github.com/fuzihaofzh/CSTL',
+    url='https://github.com/fuzihaofzh/cstl',
     author='',
     author_email='',
     license='',
@@ -19,7 +19,7 @@ setup(
     ],
     keywords='C++ STL List Dict Set',
     packages = find_packages(),  
-    package_data={'': ['_CSTL.so']},
+    package_data={'': ['_cstl.so']},
     long_description=long_description,
     long_description_content_type='text/markdown',
     include_package_data=True
