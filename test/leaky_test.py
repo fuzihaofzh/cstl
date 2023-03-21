@@ -6,7 +6,7 @@ from collections import OrderedDict
 import gc
 from multiprocessing import Manager
 import sys
-import CSTL
+import cstl
 from tqdm.auto import tqdm
 
 class MyDict(object):
@@ -65,8 +65,8 @@ class DataIter(Dataset):
         #self.data = cmap.IntMap()
         #for i in range(24000000):
         #    self.data.set(i, i)
-        self.data = CSTL.VecInt(range(24000000)) # Good
-        self.data = CSTL.MapIntInt({i : i for i in range(24000000)})
+        self.data = cstl.VecInt(range(24000000)) # Good
+        self.data = cstl.MapIntInt({i : i for i in range(24000000)})
         
     def __len__(self):
         #return len(self.data.item())
