@@ -1,6 +1,6 @@
 # CSTL : The C++ Standard Template Library (STL) for Python
 
-In this `cstl` tool, we wrap several C++ STL containers to use in Python. The containers use native C++ implementation and will not have the [Copy-on-Write issue](#copy-on-Write-issue-in-python) like native `list`, and `dict` in Python (Someone refers to it as memory leakage in multiprocessing which always happens in all Python native objects with ref count). Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
+In this `cstl` tool, we wrap several C++ STL containers to use in Python. The containers use native C++ implementation and does not have the [Copy-on-Write issue](#copy-on-Write-issue-in-python) like native `list`, and `dict` in Python (Someone refers to it as memory leakage in multiprocessing which always happens in all Python native objects with ref count). Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
 
 ## Install
 Install from `pip`:
@@ -19,6 +19,14 @@ python setup.py install --single-version-externally-managed --record files.txt
 ## Usage 
 ```python
 import cstl
+
+# Directly covert containers from python
+v = cstl.frompy({"1":[1,2,3], "2":[4,5,6]})
+v["1"][2] = 10
+pv = cstl.topy(v)
+print(pv)
+
+# You can also explictly specify the type
 vec = cstl.VecInt([1,2,3,4,5,6,7])
 print(vec[2])      #3
 
@@ -34,6 +42,8 @@ print(list(vec))   #[1, 2, 1, 4, 5, 6, 7, 10]
 vmif = cstl.VecMapIntFloat([{1:3.4},{4:5.5}])
 print(vmif[0][1])  #3.4000000953674316
 ```
+
+Please refer to more usage in `test/test/py`.
 
 ## Supported Datatype
 

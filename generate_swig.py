@@ -64,7 +64,7 @@ third.update(make_map(ktypes, second))
 full = {}
 full.update(first)
 full.update(second)
-#full.update(third)
+full.update(third)
 
 os.system("mkdir cstl")
 content = header + "\n".join(render(full))
