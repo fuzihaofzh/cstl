@@ -1,6 +1,6 @@
 # CSTL : The C++ Standard Template Library (STL) for Python
 
-In this `cstl` tool, we wrap several C++ STL containers (`std::vector`, `std::unordered_map`, `std::unordered_set`) to use in Python. The containers use native C++ implementation and does not have the [Copy-on-Write issue](#copy-on-Write-issue-in-python) like native `list`, and `dict` in Python (Someone refers to it as memory leakage in multiprocessing which always happens in all Python native objects with ref count). Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
+In this `cstl` tool, we wrap several C++ STL containers (`std::vector`, `std::unordered_map`, and `std::unordered_set`) to replace the corresponding structures (`list`, `dict`, and `set`) in Python. The containers use native C++ implementation and does not have the [Copy-on-Write issue](#copy-on-Write-issue-in-python) like native `list`, and `dict` in Python (Someone refers to it as memory leakage in multiprocessing which always happens in all Python native objects with ref count). Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
 
 ## Install
 Install from `pip`:
