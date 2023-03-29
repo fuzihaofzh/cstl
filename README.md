@@ -68,7 +68,7 @@ The supported containers are listed as follows
 |set|std::unordered_set|
 
 
-We also support nested container, namely, structure like `std::unordered_map< std::string,std::vector< bool > > ` is supported. Currently, at most 2 nested layers are supported. If you want to support more layers, simply uncomment the line `full.update(third)` in `generate_swig.py` and compile from the source. But please note the the generated files could be very large.
+We also support nested container, namely, structure like `std::unordered_map< std::string,std::vector< bool > > ` is supported. Currently, at most 3 nested layers are supported. If you want to support more layers, simply uncomment the line `full.update(fourth)` in `generate_swig.py` and compile from the source. But please note the the generated files could be very large. We suggest modifying the generated `cstl/cstl.i` file to only keep the containers you will use and compile the lib manually.
 
 Please be noted that if you want to pass a Python set to set in `cstl`, you should first convert it into a list. This is a [known issue](https://stackoverflow.com/questions/73900661/using-swig-python-wrapper-argument-2-of-type-stdunordered-set-stdstring) for swig, let's see whether it will be resolved soon. 
 
