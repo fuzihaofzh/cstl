@@ -61,12 +61,17 @@ third = {}
 third.update(make_vec(second))
 third.update(make_map(ktypes, second))
 
+fourth = {}
+fourth.update(make_vec(third))
+fourth.update(make_map(ktypes, third))
+
 full = {}
 full.update(first)
 full.update(second)
 full.update(third)
+#full.update(fourth)
 
-os.system("mkdir cstl")
+os.system("mkdir cstl -p")
 content = header + "\n".join(render(full))
 open("cstl/cstl.i", "w").write(content)
 
@@ -76,9 +81,15 @@ open("cstl/__init__.py", "w").write("from cstl.version import __version__\nfrom 
 os.system("cp version.py cstl/version.py")
 
 
+
+
+supported_containers_header = """
+|cstl name|C++ class|
+|---|---|
+"""
 md = []
 for f in full:
     md.append(f"| {f} | `{full[f]['cname']}` |")
-open("cstl/supported_containers.md", "w").write("\n".join(md))
+open("supported_containers.md", "w").write(supported_containers_header + "\n".join(md))
 
 

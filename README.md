@@ -16,14 +16,16 @@ cd cstl
 python setup.py install --single-version-externally-managed --record files.txt
 ```
 
+For users on windows or MacOS. Please compile from the source.
+
 ## Usage 
 ```python
 import cstl
 
 # Directly covert containers from python
-v = cstl.frompy({"1":[1,2,3], "2":[4,5,6]})
-v["1"][2] = 10
-pv = cstl.topy(v)
+v = cstl.frompy({"1":[1,2,3], "2":[4,5,6]}) # convert python object to cstl object
+v["1"][2] = 10 # access cstl object
+pv = cstl.topy(v) # convert cstl object to python object 
 print(pv)
 
 # You can also explictly specify the type
@@ -43,7 +45,7 @@ vmif = cstl.VecMapIntFloat([{1:3.4},{4:5.5}])
 print(vmif[0][1])  #3.4000000953674316
 ```
 
-Please refer to more usage in `test/test/py`.
+Please refer to more usage in `test/test.py`.
 
 ## Supported Datatype
 
@@ -86,142 +88,6 @@ It can be concluded from the table that cstl is slower than python native list a
 [Copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write) is a feature and not a bug for Python. Usually, in python multiprocessing, if we have a large data shared by each process, we will see as the program runs, the engaged memory grows gradually and finally occupy all the machine's memory and raise a Memory Error. Someone refers to it as memory leaky in the multiprocess. However, this is caused by a feature of Python. It is because, in multi-processing programs, the shared object will be copied to each process if they access the data. However, if the data is large and we use several processes, the memory cannot hold a separate copy for each process. This cannot be solved in Python as all Python's native structures with ref count have such problems (feature?). A more detailed discussion can be found at https://github.com/pytorch/pytorch/issues/13246 . Many other containers like pytorch, numpy. However, they do not support data structure like nested map.
 
 ## Supported STL Containers List
-We support the following nested containers. If you need more than 2 layers of nested containers please refer to [Supported Containers](#supported-containers)
+We support the following nested containers. If you need more than 3 layers of nested containers please refer to [Supported Containers](#supported-containers)
 
-|cstl name|C++ class|
-|---|---|
-| VecInt | `std::vector<int> ` |
-| VecStr | `std::vector<std::string> ` |
-| VecFloat | `std::vector<float> ` |
-| VecDouble | `std::vector<double> ` |
-| VecBool | `std::vector<bool> ` |
-| VecLong | `std::vector<std::int64_t> ` |
-| SetInt | `std::unordered_set<int> ` |
-| SetStr | `std::unordered_set<std::string> ` |
-| SetLong | `std::unordered_set<std::int64_t> ` |
-| MapIntInt | `std::unordered_map<int, int> ` |
-| MapIntStr | `std::unordered_map<int, std::string> ` |
-| MapIntFloat | `std::unordered_map<int, float> ` |
-| MapIntDouble | `std::unordered_map<int, double> ` |
-| MapIntBool | `std::unordered_map<int, bool> ` |
-| MapIntLong | `std::unordered_map<int, std::int64_t> ` |
-| MapStrInt | `std::unordered_map<std::string, int> ` |
-| MapStrStr | `std::unordered_map<std::string, std::string> ` |
-| MapStrFloat | `std::unordered_map<std::string, float> ` |
-| MapStrDouble | `std::unordered_map<std::string, double> ` |
-| MapStrBool | `std::unordered_map<std::string, bool> ` |
-| MapStrLong | `std::unordered_map<std::string, std::int64_t> ` |
-| MapLongInt | `std::unordered_map<std::int64_t, int> ` |
-| MapLongStr | `std::unordered_map<std::int64_t, std::string> ` |
-| MapLongFloat | `std::unordered_map<std::int64_t, float> ` |
-| MapLongDouble | `std::unordered_map<std::int64_t, double> ` |
-| MapLongBool | `std::unordered_map<std::int64_t, bool> ` |
-| MapLongLong | `std::unordered_map<std::int64_t, std::int64_t> ` |
-| VecVecInt | `std::vector<std::vector<int> > ` |
-| VecVecStr | `std::vector<std::vector<std::string> > ` |
-| VecVecFloat | `std::vector<std::vector<float> > ` |
-| VecVecDouble | `std::vector<std::vector<double> > ` |
-| VecVecBool | `std::vector<std::vector<bool> > ` |
-| VecVecLong | `std::vector<std::vector<std::int64_t> > ` |
-| VecSetInt | `std::vector<std::unordered_set<int> > ` |
-| VecSetStr | `std::vector<std::unordered_set<std::string> > ` |
-| VecSetLong | `std::vector<std::unordered_set<std::int64_t> > ` |
-| VecMapIntInt | `std::vector<std::unordered_map<int, int> > ` |
-| VecMapIntStr | `std::vector<std::unordered_map<int, std::string> > ` |
-| VecMapIntFloat | `std::vector<std::unordered_map<int, float> > ` |
-| VecMapIntDouble | `std::vector<std::unordered_map<int, double> > ` |
-| VecMapIntBool | `std::vector<std::unordered_map<int, bool> > ` |
-| VecMapIntLong | `std::vector<std::unordered_map<int, std::int64_t> > ` |
-| VecMapStrInt | `std::vector<std::unordered_map<std::string, int> > ` |
-| VecMapStrStr | `std::vector<std::unordered_map<std::string, std::string> > ` |
-| VecMapStrFloat | `std::vector<std::unordered_map<std::string, float> > ` |
-| VecMapStrDouble | `std::vector<std::unordered_map<std::string, double> > ` |
-| VecMapStrBool | `std::vector<std::unordered_map<std::string, bool> > ` |
-| VecMapStrLong | `std::vector<std::unordered_map<std::string, std::int64_t> > ` |
-| VecMapLongInt | `std::vector<std::unordered_map<std::int64_t, int> > ` |
-| VecMapLongStr | `std::vector<std::unordered_map<std::int64_t, std::string> > ` |
-| VecMapLongFloat | `std::vector<std::unordered_map<std::int64_t, float> > ` |
-| VecMapLongDouble | `std::vector<std::unordered_map<std::int64_t, double> > ` |
-| VecMapLongBool | `std::vector<std::unordered_map<std::int64_t, bool> > ` |
-| VecMapLongLong | `std::vector<std::unordered_map<std::int64_t, std::int64_t> > ` |
-| MapIntVecInt | `std::unordered_map<int, std::vector<int> > ` |
-| MapIntVecStr | `std::unordered_map<int, std::vector<std::string> > ` |
-| MapIntVecFloat | `std::unordered_map<int, std::vector<float> > ` |
-| MapIntVecDouble | `std::unordered_map<int, std::vector<double> > ` |
-| MapIntVecBool | `std::unordered_map<int, std::vector<bool> > ` |
-| MapIntVecLong | `std::unordered_map<int, std::vector<std::int64_t> > ` |
-| MapIntSetInt | `std::unordered_map<int, std::unordered_set<int> > ` |
-| MapIntSetStr | `std::unordered_map<int, std::unordered_set<std::string> > ` |
-| MapIntSetLong | `std::unordered_map<int, std::unordered_set<std::int64_t> > ` |
-| MapIntMapIntInt | `std::unordered_map<int, std::unordered_map<int, int> > ` |
-| MapIntMapIntStr | `std::unordered_map<int, std::unordered_map<int, std::string> > ` |
-| MapIntMapIntFloat | `std::unordered_map<int, std::unordered_map<int, float> > ` |
-| MapIntMapIntDouble | `std::unordered_map<int, std::unordered_map<int, double> > ` |
-| MapIntMapIntBool | `std::unordered_map<int, std::unordered_map<int, bool> > ` |
-| MapIntMapIntLong | `std::unordered_map<int, std::unordered_map<int, std::int64_t> > ` |
-| MapIntMapStrInt | `std::unordered_map<int, std::unordered_map<std::string, int> > ` |
-| MapIntMapStrStr | `std::unordered_map<int, std::unordered_map<std::string, std::string> > ` |
-| MapIntMapStrFloat | `std::unordered_map<int, std::unordered_map<std::string, float> > ` |
-| MapIntMapStrDouble | `std::unordered_map<int, std::unordered_map<std::string, double> > ` |
-| MapIntMapStrBool | `std::unordered_map<int, std::unordered_map<std::string, bool> > ` |
-| MapIntMapStrLong | `std::unordered_map<int, std::unordered_map<std::string, std::int64_t> > ` |
-| MapIntMapLongInt | `std::unordered_map<int, std::unordered_map<std::int64_t, int> > ` |
-| MapIntMapLongStr | `std::unordered_map<int, std::unordered_map<std::int64_t, std::string> > ` |
-| MapIntMapLongFloat | `std::unordered_map<int, std::unordered_map<std::int64_t, float> > ` |
-| MapIntMapLongDouble | `std::unordered_map<int, std::unordered_map<std::int64_t, double> > ` |
-| MapIntMapLongBool | `std::unordered_map<int, std::unordered_map<std::int64_t, bool> > ` |
-| MapIntMapLongLong | `std::unordered_map<int, std::unordered_map<std::int64_t, std::int64_t> > ` |
-| MapStrVecInt | `std::unordered_map<std::string, std::vector<int> > ` |
-| MapStrVecStr | `std::unordered_map<std::string, std::vector<std::string> > ` |
-| MapStrVecFloat | `std::unordered_map<std::string, std::vector<float> > ` |
-| MapStrVecDouble | `std::unordered_map<std::string, std::vector<double> > ` |
-| MapStrVecBool | `std::unordered_map<std::string, std::vector<bool> > ` |
-| MapStrVecLong | `std::unordered_map<std::string, std::vector<std::int64_t> > ` |
-| MapStrSetInt | `std::unordered_map<std::string, std::unordered_set<int> > ` |
-| MapStrSetStr | `std::unordered_map<std::string, std::unordered_set<std::string> > ` |
-| MapStrSetLong | `std::unordered_map<std::string, std::unordered_set<std::int64_t> > ` |
-| MapStrMapIntInt | `std::unordered_map<std::string, std::unordered_map<int, int> > ` |
-| MapStrMapIntStr | `std::unordered_map<std::string, std::unordered_map<int, std::string> > ` |
-| MapStrMapIntFloat | `std::unordered_map<std::string, std::unordered_map<int, float> > ` |
-| MapStrMapIntDouble | `std::unordered_map<std::string, std::unordered_map<int, double> > ` |
-| MapStrMapIntBool | `std::unordered_map<std::string, std::unordered_map<int, bool> > ` |
-| MapStrMapIntLong | `std::unordered_map<std::string, std::unordered_map<int, std::int64_t> > ` |
-| MapStrMapStrInt | `std::unordered_map<std::string, std::unordered_map<std::string, int> > ` |
-| MapStrMapStrStr | `std::unordered_map<std::string, std::unordered_map<std::string, std::string> > ` |
-| MapStrMapStrFloat | `std::unordered_map<std::string, std::unordered_map<std::string, float> > ` |
-| MapStrMapStrDouble | `std::unordered_map<std::string, std::unordered_map<std::string, double> > ` |
-| MapStrMapStrBool | `std::unordered_map<std::string, std::unordered_map<std::string, bool> > ` |
-| MapStrMapStrLong | `std::unordered_map<std::string, std::unordered_map<std::string, std::int64_t> > ` |
-| MapStrMapLongInt | `std::unordered_map<std::string, std::unordered_map<std::int64_t, int> > ` |
-| MapStrMapLongStr | `std::unordered_map<std::string, std::unordered_map<std::int64_t, std::string> > ` |
-| MapStrMapLongFloat | `std::unordered_map<std::string, std::unordered_map<std::int64_t, float> > ` |
-| MapStrMapLongDouble | `std::unordered_map<std::string, std::unordered_map<std::int64_t, double> > ` |
-| MapStrMapLongBool | `std::unordered_map<std::string, std::unordered_map<std::int64_t, bool> > ` |
-| MapStrMapLongLong | `std::unordered_map<std::string, std::unordered_map<std::int64_t, std::int64_t> > ` |
-| MapLongVecInt | `std::unordered_map<std::int64_t, std::vector<int> > ` |
-| MapLongVecStr | `std::unordered_map<std::int64_t, std::vector<std::string> > ` |
-| MapLongVecFloat | `std::unordered_map<std::int64_t, std::vector<float> > ` |
-| MapLongVecDouble | `std::unordered_map<std::int64_t, std::vector<double> > ` |
-| MapLongVecBool | `std::unordered_map<std::int64_t, std::vector<bool> > ` |
-| MapLongVecLong | `std::unordered_map<std::int64_t, std::vector<std::int64_t> > ` |
-| MapLongSetInt | `std::unordered_map<std::int64_t, std::unordered_set<int> > ` |
-| MapLongSetStr | `std::unordered_map<std::int64_t, std::unordered_set<std::string> > ` |
-| MapLongSetLong | `std::unordered_map<std::int64_t, std::unordered_set<std::int64_t> > ` |
-| MapLongMapIntInt | `std::unordered_map<std::int64_t, std::unordered_map<int, int> > ` |
-| MapLongMapIntStr | `std::unordered_map<std::int64_t, std::unordered_map<int, std::string> > ` |
-| MapLongMapIntFloat | `std::unordered_map<std::int64_t, std::unordered_map<int, float> > ` |
-| MapLongMapIntDouble | `std::unordered_map<std::int64_t, std::unordered_map<int, double> > ` |
-| MapLongMapIntBool | `std::unordered_map<std::int64_t, std::unordered_map<int, bool> > ` |
-| MapLongMapIntLong | `std::unordered_map<std::int64_t, std::unordered_map<int, std::int64_t> > ` |
-| MapLongMapStrInt | `std::unordered_map<std::int64_t, std::unordered_map<std::string, int> > ` |
-| MapLongMapStrStr | `std::unordered_map<std::int64_t, std::unordered_map<std::string, std::string> > ` |
-| MapLongMapStrFloat | `std::unordered_map<std::int64_t, std::unordered_map<std::string, float> > ` |
-| MapLongMapStrDouble | `std::unordered_map<std::int64_t, std::unordered_map<std::string, double> > ` |
-| MapLongMapStrBool | `std::unordered_map<std::int64_t, std::unordered_map<std::string, bool> > ` |
-| MapLongMapStrLong | `std::unordered_map<std::int64_t, std::unordered_map<std::string, std::int64_t> > ` |
-| MapLongMapLongInt | `std::unordered_map<std::int64_t, std::unordered_map<std::int64_t, int> > ` |
-| MapLongMapLongStr | `std::unordered_map<std::int64_t, std::unordered_map<std::int64_t, std::string> > ` |
-| MapLongMapLongFloat | `std::unordered_map<std::int64_t, std::unordered_map<std::int64_t, float> > ` |
-| MapLongMapLongDouble | `std::unordered_map<std::int64_t, std::unordered_map<std::int64_t, double> > ` |
-| MapLongMapLongBool | `std::unordered_map<std::int64_t, std::unordered_map<std::int64_t, bool> > ` |
-| MapLongMapLongLong | `std::unordered_map<std::int64_t, std::unordered_map<std::int64_t, std::int64_t> > ` |
+See [All Supported Containers](./supported_containers.md) for details of other containers.
