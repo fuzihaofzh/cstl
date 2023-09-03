@@ -1,6 +1,6 @@
 # CSTL : The C++ Standard Template Library (STL) for Python
 
-In this `cstl` tool, we wrap several C++ STL containers (`std::vector`, `std::unordered_map`, and `std::unordered_set`) to replace the corresponding structures (`list`, `dict`, and `set`) in Python. The containers use native C++ implementation and does not have the [Copy-on-Write issue](#copy-on-Write-issue-in-python) like native `list`, and `dict` in Python (Someone refers to it as memory leakage in multiprocessing which always happens in all Python native objects with ref count). Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed.
+In this `cstl` tool, we wrap several C++ STL containers (`std::vector`, `std::unordered_map`, and `std::unordered_set`) to replace the corresponding structures (`list`, `dict`, and `set`) in Python. The containers use native C++ implementation and does not have the [Copy-on-Write issue](#copy-on-Write-issue-in-python) like native `list`, and `dict` in Python (Someone refers to it as memory leakage in multiprocessing which always happens in all Python native objects with ref count). Though it is designed to solve the CoW issue, it can also be used in scenarios where a standard C++ container is needed. Get more details of the motivation with this article: [Harnessing the Power of C++ STL in Python with CSTL](http://localhost:4000/blog/2023/04/03/Harnessing-the-Power-of-C-STL-in-Python-with-CSTL/)
 
 ## Install
 Install from `pip`:
@@ -87,7 +87,15 @@ It can be concluded from the table that cstl is slower than python native list a
 ## Copy-on-Write Issue in Python
 [Copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write) is a feature and not a bug for Python. Usually, in python multiprocessing, if we have a large data shared by each process, we will see as the program runs, the engaged memory grows gradually and finally occupy all the machine's memory and raise a Memory Error. Someone refers to it as memory leaky in the multiprocess. However, this is caused by a feature of Python. It is because, in multi-processing programs, the shared object will be copied to each process if they access the data. However, if the data is large and we use several processes, the memory cannot hold a separate copy for each process. This cannot be solved in Python as all Python's native structures with ref count have such problems (feature?). A more detailed discussion can be found at https://github.com/pytorch/pytorch/issues/13246 . Many other containers like pytorch, numpy. However, they do not support data structure like nested map.
 
+
+
 ## Supported STL Containers List
 We support the following nested containers. If you need more than 3 layers of nested containers please refer to [Supported Containers](#supported-containers)
 
 See [All Supported Containers](./supported_containers.md) for details of other containers.
+
+
+
+## Reference
+[1] [Harnessing the Power of C++ STL in Python with CSTL](http://localhost:4000/blog/2023/04/03/Harnessing-the-Power-of-C-STL-in-Python-with-CSTL/)
+
